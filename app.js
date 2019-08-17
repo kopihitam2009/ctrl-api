@@ -2,6 +2,7 @@ const easymidi = require('easymidi');
 const atem = require('./lib/atem');
 
 atem.connect('192.168.10.240')
+
 const device = easymidi.getInputs();
 var input = new easymidi.Input(device);
 var output = new easymidi.Output(device);
@@ -12,6 +13,7 @@ const arrayPrv = [87,88,91,92,86,93,94,95];
 const arrayPgm = [89,90,40,41,42,43,44,45];
 const arrayAtm = [1,2,3,4,5,6,7,8];
 
+// Turn off all led button
 const arrayled = arrayPgm.concat(arrayPrv)
 for (var i = 0; i < arrayled.length; i++) {
     output.send('noteon', {
@@ -21,6 +23,7 @@ for (var i = 0; i < arrayled.length; i++) {
     });
 };
 
+// Turn on/off led button preview base on user click
 function ledprv (note, velocity, channel) {
     output.send('noteon', {
         note: note,
@@ -31,6 +34,7 @@ function ledprv (note, velocity, channel) {
 };
 ledprv(88,127,0);
 
+// Turn on/off led button program base on user click
 function ledpgm (note, velocity, channel) {
     output.send('noteon', {
         note: note,
@@ -41,11 +45,13 @@ function ledpgm (note, velocity, channel) {
 };
 ledpgm(89,127,0);
 
+// just logging for debugging purpose
 function log(note1, note2, note3, note4, note5) {
     console.log('---------------------------------------------');
     console.log('lastnotePrv : ' + note1 + ' | lastnotePgm : ' + note2 + ' | ' + 'noteon', note3, note4, note5);
     //log(lastnotePrv, lastnotePgm, msg.note, msg.velocity, msg.channel);
 }
+
 
 input.on('noteon', function (msg) {
     log(lastnotePrv, lastnotePgm, msg.note, msg.velocity, msg.channel);
